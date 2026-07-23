@@ -5,8 +5,7 @@ Stage 6 of the RAG pipeline: Context Retrieval Engine.
 
 Accepts user query parameters ('Current Skills' and 'Target Job
 Title'), embeds the target job title, and performs semantic vector
-search over ChromaDB combined with a metadata filter on job title to
-retrieve the top relevant Wuzzuf job postings.
+search over ChromaDB to retrieve the top relevant Wuzzuf job postings.
 
 This module is imported by 07_prompting.py and by streamlit_app.py --
 it is not meant to rebuild the store on import, only to query it.
@@ -25,13 +24,8 @@ embed_texts = _vec.embed_texts
 def retrieve_context(current_skills: str, target_job_title: str, top_k: int = 8) -> list:
     """Retrieve the top_k most relevant job postings for a user query.
 
-    Combines:
-      - Semantic vector search over the full collection using an
-        embedding built from the target job title + current skills
-        (so both influence relevance ranking).
-      - A metadata filter that prioritizes postings whose title
-        contains the target job title, when available, falling back
-        to an unfiltered semantic search otherwise.
+    Uses semantic vector search over the full collection using an
+    embedding built from the target job title + current skills.
 
     Returns a list of dicts: {"text": str, "metadata": dict, "distance": float}
     """
@@ -40,28 +34,18 @@ def retrieve_context(current_skills: str, target_job_title: str, top_k: int = 8)
     query_text = f"Target Job Title: {target_job_title}. Current Skills: {current_skills}"
     query_embedding = embed_texts([query_text])[0].tolist()
 
-    # First try a metadata-filtered search restricted to job titles that
-    # contain the target title (case-insensitive "contains" match).
-    where_document = {"$contains": target_job_title} if target_job_title else None
+    # المباشرة بالبحث الدلالي لضمان إرجاع نتائج صحيحة دائماً وتفادي مشاكل الفلاتر الصارمة
+    results = collection.query(
+        query_embeddings=[query_embedding],
+        n_results=top_k
+    )
 
-    try:
-        results = collection.query(
-            query_embeddings=[query_embedding],
-            n_results=top_k,
-            where_document=where_document,
-        )
-    except Exception:
-        results = None
+    formatted_results = _format_results(results)
 
-    filtered_hits = _format_results(results)
+    # طباعة بسيطة للـ Debugging لمعرفة عدد الوظائف التي تم استرجاعها
+    print(f"DEBUG: Retrieved {len(formatted_results)} job postings for query: '{target_job_title}'")
 
-    if len(filtered_hits) >= min(3, top_k):
-        return filtered_hits
-
-    # Fall back to a pure semantic search across the whole collection
-    # if the metadata filter was too strict (e.g. no exact title match).
-    results = collection.query(query_embeddings=[query_embedding], n_results=top_k)
-    return _format_results(results)
+    return formatted_results
 
 
 def _format_results(results) -> list:
