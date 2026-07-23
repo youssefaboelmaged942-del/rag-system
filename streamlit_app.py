@@ -82,8 +82,4 @@ if submitted:
                 for hit in hits:
                     st.markdown(f"- {hit['text']}")
 
-st.divider()
-st.caption(
-    "المشروع يتبع تسلسل المعمل: documents -> preprocessing -> chunking -> "
-    "vector representation -> vector store -> context retrieval -> prompting -> Streamlit UI."
-)
+
