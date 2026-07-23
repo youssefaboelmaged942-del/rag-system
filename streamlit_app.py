@@ -2,17 +2,6 @@
 streamlit_app.py
 -----------------
 Stage 8 of the RAG pipeline: Streamlit App Interface & Deployment.
-
-A simple Streamlit UI for the AI Career Advisor:
-  - Text inputs for 'Current Skills' and 'Target Job Title'.
-  - Retrieves relevant real job postings from the Wuzzuf vector store.
-  - Calls the OpenRouter LLM to generate a structured Arabic report:
-      المهارات المتوفرة / فجوة المهارات / خطة التعلم / المصادر والمراجع
-
-API key handling:
-  The real OpenRouter API key is never written into this file. When
-  deployed on Streamlit Cloud, it is read securely from
-  st.secrets (configured under "Manage app" -> "Secrets").
 """
 
 import streamlit as st
@@ -23,16 +12,19 @@ rag_retrieve = import_module("06_retrieve_context")
 
 st.set_page_config(page_title="مستشار المسار المهني الذكي", page_icon="🎯", layout="centered")
 
-# --- Secure API key loading: prefer Streamlit secrets when deployed ---
+# --- Secure API key loading ---
 try:
     if not rag_prompting.OPENROUTER_API_KEY:
         rag_prompting.OPENROUTER_API_KEY = st.secrets.get("OPENROUTER_API_KEY", "")
     rag_prompting.OPENROUTER_MODEL = st.secrets.get("OPENROUTER_MODEL", rag_prompting.OPENROUTER_MODEL)
 except Exception:
-    # st.secrets raises if no secrets.toml exists (e.g. local run without
-    # secrets configured) -- fall back silently to env vars already set
-    # on the module.
     pass
+
+# --- تهيئة Session State لحفظ النتائج بين دورات اعادة التشغيل (Reruns) ---
+if "report" not in st.session_state:
+    st.session_state.report = None
+if "hits" not in st.session_state:
+    st.session_state.hits = []
 
 st.title("🎯 مستشار المسار المهني الذكي")
 st.caption("مبني على وظائف حقيقية من Wuzzuf لتحليل فجوة المهارات وبناء خطة تعلم عملية.")
@@ -49,6 +41,7 @@ with st.form("career_form"):
     top_k = st.slider("عدد الوظائف المرجعية لاسترجاعها", min_value=3, max_value=15, value=8)
     submitted = st.form_submit_button("حلل مساري المهني")
 
+# --- عند النقر على الزر يتم جلب البيانات وحفظها في session_state ---
 if submitted:
     if not current_skills.strip() or not target_job_title.strip():
         st.warning("من فضلك أدخل كلًا من المهارات الحالية والمسمى الوظيفي المستهدف.")
@@ -70,16 +63,22 @@ if submitted:
                     target_job_title=target_job_title,
                     retrieved_context=hits,
                 )
+                # حفظ النتائج في الـ State
+                st.session_state.hits = hits
+                st.session_state.report = report
             except Exception as e:
                 st.error(f"حدث خطأ أثناء التحليل: {e}")
-                hits, report = [], None
+                st.session_state.hits = []
+                st.session_state.report = None
 
-        if report:
-            st.markdown("## 📊 التقرير المهني")
-            st.markdown(report)
+# --- عرض التقرير والـ Expander بشكل مستقل بناءً على session_state ---
+if st.session_state.report:
+    st.markdown("## 📊 التقرير المهني")
+    st.markdown(st.session_state.report)
 
-            with st.expander("عرض الوظائف المسترجعة من قاعدة البيانات (context)"):
-                for hit in hits:
-                    st.markdown(f"- {hit['text']}")
-
-
+    if st.session_state.hits:
+        with st.expander("عرض الوظائف المسترجعة من قاعدة البيانات (context)"):
+            for hit in st.session_state.hits:
+                # التحقق من بناء القاموس (dict أو object) لعرض النص ب أمان
+                text_content = hit.get('text', str(hit)) if isinstance(hit, dict) else str(hit)
+                st.markdown(f"- {text_content}")
