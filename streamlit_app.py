@@ -4,11 +4,29 @@ streamlit_app.py
 Stage 8 of the RAG pipeline: Streamlit App Interface & Deployment.
 """
 
+import os
 import streamlit as st
 from importlib import import_module
 
 # --- Page Configuration (Must be the first Streamlit command) ---
 st.set_page_config(page_title="AI Career Advisor (Egypt)", page_icon="🎯", layout="centered")
+
+# --- Auto-initialize Vector Store for Cloud Deployment ---
+_store = import_module("05_create_chroma_store")
+build_store = _store.build_store
+get_chroma_collection = _store.get_chroma_collection
+CHROMA_DIR = _store.CHROMA_DIR
+
+@st.cache_resource
+def ensure_vector_store():
+    """تأكد من وجود قاعدة البيانات وبنائها تلقائياً إذا كانت فارغة على السيرفر"""
+    _, collection = get_chroma_collection(CHROMA_DIR)
+    if collection.count() == 0:
+        with st.spinner("جاري إعداد قاعدة بيانات الوظائف لأول مرة... قد يستغرق ذلك بضع دقائق"):
+            build_store()
+
+# إقلاع فحص القاعدة عند تحميل الموقع
+ensure_vector_store()
 
 # --- Background Image Setup ---
 bg_image_url = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
