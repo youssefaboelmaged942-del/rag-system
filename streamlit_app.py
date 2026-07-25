@@ -15,7 +15,14 @@ bg_image_url = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=8
 
 st.markdown(f"""
     <style>
-    /* تغيير خلفية التطبيق إلى الصورة */
+    /* استدعاء خط Inter الاحترافي */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    html, body, [class*="css"] {{
+        font-family: 'Inter', sans-serif;
+    }}
+
+    /* تغيير خلفية التطبيق */
     .stApp {{
         background-image: url("{bg_image_url}");
         background-size: cover;
@@ -23,21 +30,79 @@ st.markdown(f"""
         background-repeat: no-repeat;
         background-attachment: fixed;
     }}
-    
-    /* إضافة خلفية بيضاء شبه شفافة للنموذج لسهولة قراءة النصوص */
-    [data-testid="stForm"] {{
-        background-color: rgba(255, 255, 255, 0.90);
-        padding: 2rem;
+
+    /* رأس الصفحة والعناوين - تصميم بلوري أنيق */
+    .stTitle, .stCaption {{
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(8px);
+        padding: 15px 20px;
         border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        display: inline-block;
+        margin-bottom: 10px;
     }}
-    
-    /* تحسين مظهر نتائج التقرير */
-    .stMarkdown {{
-        background-color: rgba(255, 255, 255, 0.85);
-        padding: 10px;
-        border-radius: 8px;
+
+    h1 {{
+        color: #0F172A !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
     }}
+
+    /* تصميم الـ Form وحقول الإدخال */
+    [data-testid="stForm"] {{
+        background-color: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(10px);
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
+    }}
+
+    /* العناوين داخل הـ Form */
+    [data-testid="stForm"] label {{
+        color: #1E293B !important;
+        font-weight: 600 !important;
+        font-size: 1.05rem !important;
+    }}
+
+    /* تحسين زر الإرسال */
+    [data-testid="stForm"] button {{
+        background-color: #2563EB !important;
+        color: #FFFFFF !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        border: none !important;
+        padding: 0.6rem 1.5rem !important;
+        transition: all 0.3s ease !important;
+    }}
+
+    [data-testid="stForm"] button:hover {{
+        background-color: #1D4ED8 !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3) !important;
+    }}
+
+    /* تحسين عرض تقرير النتيجة */
+    .stMarkdown h2 {{
+        color: #0F172A !important;
+        font-weight: 700;
+    }}
+
+    /* حاوية نتائج التقرير */
+    [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li {{
+        color: #1E293B;
+        font-size: 1.02rem;
+        line-height: 1.6;
+    }}
+
+    /* تحسين القوائم المنسدلة والـ Expander */
+    .streamlit-expanderHeader {{
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 8px !important;
+        color: #0F172A !important;
+        font-weight: 600 !important;
+    }}
+
     </style>
 """, unsafe_allow_html=True)
 
@@ -108,9 +173,19 @@ if submitted:
 # --- Display Results ---
 if st.session_state.report:
     st.markdown("## 📊 Career Report")
-    st.markdown(st.session_state.report)
+    
+    # وضع التقرير داخل بطاقة أنيقة واضحة
+    st.markdown(
+        f"""
+        <div style="background-color: rgba(255, 255, 255, 0.93); backdrop-filter: blur(10px); padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+            {st.session_state.report}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     if st.session_state.hits:
+        st.write("")
         with st.expander("View Retrieved Jobs (Context)"):
             for hit in st.session_state.hits:
                 text_content = hit.get('text', str(hit)) if isinstance(hit, dict) else str(hit)
