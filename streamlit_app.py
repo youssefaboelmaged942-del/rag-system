@@ -6,45 +6,43 @@ Stage 8 of the RAG pipeline: Streamlit App Interface & Deployment.
 
 import streamlit as st
 from importlib import import_module
-st.markdown("""
-    <style>
-    /* 1. الخلفية الأساسية */
-    .stApp {
-        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-    }
 
-    /* 2. تحويل الفورم والمربعات لـ 'بطاقات' بيضاء أنيقة (Cards) */
-    .stForm, div[data-testid="stMarkdownContainer"] div {
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin-bottom: 1rem;
-    }
+# --- Page Configuration (Must be the first Streamlit command) ---
+st.set_page_config(page_title="AI Career Advisor", page_icon="🎯", layout="centered")
+
+# --- Background Image Setup ---
+bg_image_url = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+
+st.markdown(f"""
+    <style>
+    /* تغيير خلفية التطبيق إلى الصورة */
+    .stApp {{
+        background-image: url("{bg_image_url}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
     
-    /* 3. تنسيق المدخلات وزر الإدخال */
-    .stTextArea textarea, .stTextInput input {
-        border-radius: 8px !important;
-        border: 1px solid #ddd !important;
-    }
-    .stButton>button {
-        background-color: #4CAF50; /* أخضر Wuzzuf */
-        color: white;
+    /* إضافة خلفية بيضاء شبه شفافة للنموذج لسهولة قراءة النصوص */
+    [data-testid="stForm"] {{
+        background-color: rgba(255, 255, 255, 0.90);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    }}
+    
+    /* تحسين مظهر نتائج التقرير */
+    .stMarkdown {{
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 10px;
         border-radius: 8px;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #45a049;
-    }
+    }}
     </style>
 """, unsafe_allow_html=True)
 
-
-
 rag_prompting = import_module("07_prompting")
 rag_retrieve = import_module("06_retrieve_context")
-
-st.set_page_config(page_title="AI Career Advisor", page_icon="🎯", layout="centered")
 
 # --- Secure API key loading ---
 try:
