@@ -6,7 +6,15 @@ Stage 8 of the RAG pipeline: Streamlit App Interface & Deployment.
 
 import streamlit as st
 from importlib import import_module
-
+st.markdown("""
+    <style>
+    /* تغيير خلفية التطبيق الرئيسي */
+    .stApp {
+        background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        color: #333333; /* لون النص الأساسي */
+    }
+    </style>
+""", unsafe_allow_html=True)
 rag_prompting = import_module("07_prompting")
 rag_retrieve = import_module("06_retrieve_context")
 
