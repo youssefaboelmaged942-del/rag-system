@@ -82,11 +82,17 @@ st.markdown(f"""
         background-color: #1D4ED8 !important;
     }}
 
-    /* تنسيق الـ Expander للملاحظات والوظائف المسترجعة */
-    .streamlit-expanderHeader {{
-        background-color: rgba(15, 23, 42, 0.85) !important;
-        border-radius: 8px !important;
+    /* توحيد تصميم الـ Expander ليصبح مطاباقاً للكارت الزجاجي العلوي */
+    div[data-testid="stExpander"] {{
+        background-color: rgba(15, 23, 42, 0.88) !important;
+        backdrop-filter: blur(12px);
+        border-radius: 16px !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5) !important;
+    }}
+
+    div[data-testid="stExpander"] summary {{
+        border-radius: 16px !important;
     }}
 
     /* ضبط اتجاه القوائم لتكون جهة اليمين */
