@@ -20,38 +20,40 @@ try:
 except Exception:
     pass
 
-# --- تهيئة Session State لحفظ النتائج بين دورات اعادة التشغيل (Reruns) ---
+# --- Initialize Session State ---
 if "report" not in st.session_state:
     st.session_state.report = None
 if "hits" not in st.session_state:
     st.session_state.hits = []
 
+# --- Header ---
 st.title("🎯 AI Career Advisor")
-st.caption("Analyze skill gaps and build practical learning roadmaps powered by real-time Wuzzuf job data.")
+st.caption("Analyze skill gaps and build learning paths using real Wuzzuf jobs.")
 
+# --- Input Form ---
 with st.form("career_form"):
     current_skills = st.text_area(
-        "المهارات الحالية (current skills)",
-        placeholder="مثال: Python, Excel, SQL, Power BI",
+        "Current Skills",
+        placeholder="e.g., Python, Excel, SQL, Power BI",
     )
     target_job_title = st.text_input(
-        "المسمى الوظيفي المستهدف (target job title)",
-        placeholder="مثال: Data Analyst",
+        "Target Job Title",
+        placeholder="e.g., Data Analyst",
     )
-    top_k = st.slider("عدد الوظائف المرجعية لاسترجاعها", min_value=3, max_value=15, value=8)
-    submitted = st.form_submit_button("حلل مساري المهني")
+    top_k = st.slider("Number of jobs to retrieve", min_value=3, max_value=15, value=8)
+    submitted = st.form_submit_button("Analyze My Career Path")
 
-# --- عند النقر على الزر يتم جلب البيانات وحفظها في session_state ---
+# --- Form Submission Handling ---
 if submitted:
     if not current_skills.strip() or not target_job_title.strip():
-        st.warning("من فضلك أدخل كلًا من المهارات الحالية والمسمى الوظيفي المستهدف.")
+        st.warning("Please enter both your current skills and target job title.")
     elif not rag_prompting.OPENROUTER_API_KEY:
         st.error(
-            "لم يتم العثور على مفتاح OpenRouter API. من فضلك أضفه في Streamlit "
-            "Secrets (OPENROUTER_API_KEY) قبل التشغيل."
+            "OpenRouter API key not found. Please add OPENROUTER_API_KEY "
+            "to Streamlit Secrets before running."
         )
     else:
-        with st.spinner("جاري البحث في سوق العمل وتحليل الفجوة..."):
+        with st.spinner("Searching job market and analyzing skill gap..."):
             try:
                 hits = rag_retrieve.retrieve_context(
                     current_skills=current_skills,
@@ -63,22 +65,21 @@ if submitted:
                     target_job_title=target_job_title,
                     retrieved_context=hits,
                 )
-                # حفظ النتائج في الـ State
+                # Save to session state
                 st.session_state.hits = hits
                 st.session_state.report = report
             except Exception as e:
-                st.error(f"حدث خطأ أثناء التحليل: {e}")
+                st.error(f"An error occurred during analysis: {e}")
                 st.session_state.hits = []
                 st.session_state.report = None
 
-# --- عرض التقرير والـ Expander بشكل مستقل بناءً على session_state ---
+# --- Display Results ---
 if st.session_state.report:
-    st.markdown("## 📊 التقرير المهني")
+    st.markdown("## 📊 Career Report")
     st.markdown(st.session_state.report)
 
     if st.session_state.hits:
-        with st.expander("عرض الوظائف المسترجعة من قاعدة البيانات (context)"):
+        with st.expander("View Retrieved Jobs (Context)"):
             for hit in st.session_state.hits:
-                # التحقق من بناء القاموس (dict أو object) لعرض النص ب أمان
                 text_content = hit.get('text', str(hit)) if isinstance(hit, dict) else str(hit)
                 st.markdown(f"- {text_content}")
