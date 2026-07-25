@@ -26,8 +26,8 @@ if "report" not in st.session_state:
 if "hits" not in st.session_state:
     st.session_state.hits = []
 
-st.title("🎯 مستشار المسار المهني الذكي")
-st.caption("مبني على وظائف حقيقية من Wuzzuf لتحليل فجوة المهارات وبناء خطة تعلم عملية.")
+st.title("🎯 AI Career Advisor")
+st.caption("Analyze skill gaps and build practical learning roadmaps powered by real-time Wuzzuf job data.")
 
 with st.form("career_form"):
     current_skills = st.text_area(
