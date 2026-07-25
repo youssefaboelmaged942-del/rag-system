@@ -8,7 +8,7 @@ import streamlit as st
 from importlib import import_module
 
 # --- Page Configuration (Must be the first Streamlit command) ---
-st.set_page_config(page_title="AI Career Advisor", page_icon="🎯", layout="centered")
+st.set_page_config(page_title="AI Career Advisor (Egypt)", page_icon="🎯", layout="centered")
 
 # --- Background Image Setup ---
 bg_image_url = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -24,7 +24,7 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
 
-    /* إظهار كل النصوص الأساسية باللون الأبيض الناصع مع ظل خفيف لسهولة القراءة */
+    /* إظهار النصوص الأساسية باللون الأبيض الناصع مع ظل خفيف لسهولة القراءة */
     .stApp, .stApp p, .stApp span, .stApp label, .stApp h1, .stApp h2, .stApp h3, .stApp div {{
         color: #FFFFFF !important;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
@@ -32,7 +32,7 @@ st.markdown(f"""
 
     /* تصميم الـ Form بكارت زجاجي داكن ورائع */
     [data-testid="stForm"] {{
-        background-color: rgba(15, 23, 42, 0.85) !important;
+        background-color: rgba(15, 23, 42, 0.88) !important;
         backdrop-filter: blur(12px);
         padding: 2rem !important;
         border-radius: 16px !important;
@@ -63,6 +63,13 @@ st.markdown(f"""
     [data-testid="stForm"] button:hover {{
         background-color: #1D4ED8 !important;
     }}
+
+    /* تنسيق الـ Expander للملاحظات والوظائف المسترجعة */
+    .streamlit-expanderHeader {{
+        background-color: rgba(15, 23, 42, 0.85) !important;
+        border-radius: 8px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -83,9 +90,9 @@ if "report" not in st.session_state:
 if "hits" not in st.session_state:
     st.session_state.hits = []
 
-# --- Header ---
-st.title("🎯 AI Career Advisor")
-st.caption("Analyze skill gaps and build learning paths using real Wuzzuf jobs.")
+# --- Header (مخصص لمصر) ---
+st.title("🎯 AI Career Advisor (Egypt)")
+st.caption("Analyze skill gaps and build learning paths for the Egyptian job market using real Wuzzuf jobs.")
 
 # --- Input Form ---
 with st.form("career_form"):
@@ -95,10 +102,10 @@ with st.form("career_form"):
     )
     target_job_title = st.text_input(
         "Target Job Title",
-        placeholder="e.g., Data Analyst",
+        placeholder="e.g., Data Analyst in Egypt",
     )
-    top_k = st.slider("Number of jobs to retrieve", min_value=3, max_value=15, value=8)
-    submitted = st.form_submit_button("Analyze My Career Path")
+    top_k = st.slider("Number of Egyptian jobs to retrieve", min_value=3, max_value=15, value=8)
+    submitted = st.form_submit_button("Analyze My Career Path in Egypt")
 
 # --- Form Submission Handling ---
 if submitted:
@@ -110,7 +117,7 @@ if submitted:
             "to Streamlit Secrets before running."
         )
     else:
-        with st.spinner("Searching job market and analyzing skill gap..."):
+        with st.spinner("Searching Egyptian job market and analyzing skill gap..."):
             try:
                 hits = rag_retrieve.retrieve_context(
                     current_skills=current_skills,
@@ -132,11 +139,31 @@ if submitted:
 
 # --- Display Results ---
 if st.session_state.report:
-    st.markdown("## 📊 Career Report")
-    st.markdown(st.session_state.report)
+    st.markdown("## 📊 Egypt Career Roadmap & Report")
+    
+    # استخدام حاوية زجاجية داكنة لفصل نص التقرير تماماً عن الصورة الخلفية
+    st.markdown(
+        f"""
+        <div style="
+            background-color: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(12px);
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        ">
+            {st.session_state.report}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     if st.session_state.hits:
-        with st.expander("View Retrieved Jobs (Context)"):
+        with st.expander("View Retrieved Egyptian Jobs (Wuzzuf Context)"):
             for hit in st.session_state.hits:
                 text_content = hit.get('text', str(hit)) if isinstance(hit, dict) else str(hit)
                 st.markdown(f"- {text_content}")
