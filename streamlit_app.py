@@ -10,7 +10,7 @@ from importlib import import_module
 rag_prompting = import_module("07_prompting")
 rag_retrieve = import_module("06_retrieve_context")
 
-st.set_page_config(page_title="مستشار المسار المهني الذكي", page_icon="🎯", layout="centered")
+st.set_page_config(page_title="AI Career Advisor", page_icon="🎯", layout="centered")
 
 # --- Secure API key loading ---
 try:
