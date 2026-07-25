@@ -19,13 +19,11 @@ CHROMA_DIR = _store.CHROMA_DIR
 
 @st.cache_resource
 def ensure_vector_store():
-    """تأكد من وجود قاعدة البيانات وبنائها تلقائياً إذا كانت فارغة على السيرفر"""
     _, collection = get_chroma_collection(CHROMA_DIR)
     if collection.count() == 0:
-        with st.spinner("جاري إعداد قاعدة بيانات الوظائف لأول مرة... قد يستغرق ذلك بضع دقائق"):
+        with st.spinner("Setting up job database for the first time... This may take a few minutes."):
             build_store()
 
-# إقلاع فحص القاعدة عند تحميل الموقع
 ensure_vector_store()
 
 # --- Background Image Setup ---
@@ -33,7 +31,12 @@ bg_image_url = "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=8
 
 st.markdown(f"""
     <style>
-    /* تغيير خلفية التطبيق الرئيسي */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    html, body, [class*="css"], .stApp {{
+        font-family: 'Inter', sans-serif !important;
+    }}
+
     .stApp {{
         background-image: url("{bg_image_url}");
         background-size: cover;
@@ -42,13 +45,20 @@ st.markdown(f"""
         background-attachment: fixed;
     }}
 
-    /* إظهار النصوص الأساسية باللون الأبيض الناصع مع ظل خفيف لسهولة القراءة */
     .stApp, .stApp p, .stApp span, .stApp label, .stApp h1, .stApp h2, .stApp h3, .stApp div {{
         color: #FFFFFF !important;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
     }}
 
-    /* تصميم الـ Form بكارت زجاجي داكن ورائع */
+    .hero-slogan {{
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #93C5FD !important;
+        margin-top: -10px;
+        margin-bottom: 20px;
+        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+    }}
+
     [data-testid="stForm"] {{
         background-color: rgba(15, 23, 42, 0.88) !important;
         backdrop-filter: blur(12px);
@@ -58,16 +68,15 @@ st.markdown(f"""
         box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5) !important;
     }}
 
-    /* تصميم مربعات النص والمدخلات لتبدو واضحة باللون الأبيض */
     [data-testid="stForm"] input, [data-testid="stForm"] textarea {{
         background-color: #FFFFFF !important;
         color: #0F172A !important;
         text-shadow: none !important;
         border-radius: 8px !important;
         font-size: 1rem !important;
+        font-family: 'Inter', sans-serif !important;
     }}
 
-    /* زر التحليل */
     [data-testid="stForm"] button {{
         background-color: #2563EB !important;
         color: #FFFFFF !important;
@@ -76,13 +85,13 @@ st.markdown(f"""
         font-weight: bold !important;
         font-size: 1rem !important;
         padding: 0.6rem 1.5rem !important;
+        font-family: 'Inter', sans-serif !important;
     }}
 
     [data-testid="stForm"] button:hover {{
         background-color: #1D4ED8 !important;
     }}
 
-    /* توحيد تصميم الـ Expander ليصبح مطاباقاً للكارت الزجاجي العلوي */
     div[data-testid="stExpander"] {{
         background-color: rgba(15, 23, 42, 0.88) !important;
         backdrop-filter: blur(12px);
@@ -95,7 +104,6 @@ st.markdown(f"""
         border-radius: 16px !important;
     }}
 
-    /* ضبط اتجاه القوائم لتكون جهة اليمين */
     .report-card ul, .report-card ol {{
         direction: rtl !important;
         text-align: right !important;
@@ -121,8 +129,9 @@ if "report" not in st.session_state:
 if "hits" not in st.session_state:
     st.session_state.hits = []
 
-# --- Header (مخصص لمصر) ---
+# --- Header & Slogan ---
 st.title("🎯 AI Career Advisor (Egypt)")
+st.markdown('<p class="hero-slogan">Bridging Skills to Opportunities</p>', unsafe_allow_html=True)
 st.caption("Analyze skill gaps and build learning paths for the Egyptian job market using real Wuzzuf jobs.")
 
 # --- Input Form ---
@@ -160,7 +169,6 @@ if submitted:
                     target_job_title=target_job_title,
                     retrieved_context=hits,
                 )
-                # Save to session state
                 st.session_state.hits = hits
                 st.session_state.report = report
             except Exception as e:
@@ -172,7 +180,6 @@ if submitted:
 if st.session_state.report:
     st.markdown("## 📊 Egypt Career Roadmap & Report")
     
-    # تحويل التقرير إلى الاتجاه من اليمين إلى اليسار (RTL) لضبط اللغة العربية
     st.markdown(
         f"""
         <div class="report-card" style="
