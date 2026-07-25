@@ -9,7 +9,7 @@ import streamlit as st
 from importlib import import_module
 
 # --- Page Configuration (Must be the first Streamlit command) ---
-st.set_page_config(page_title="AI Career Advisor (Egypt)", page_icon="🎯", layout="centered")
+st.set_page_config(page_title="AI Career Advisor (Egypt)", page_icon="🤖", layout="centered")
 
 # --- Auto-initialize Vector Store for Cloud Deployment ---
 _store = import_module("05_create_chroma_store")
