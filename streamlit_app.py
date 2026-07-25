@@ -8,13 +8,39 @@ import streamlit as st
 from importlib import import_module
 st.markdown("""
     <style>
-    /* تغيير خلفية التطبيق الرئيسي */
+    /* 1. الخلفية الأساسية */
     .stApp {
         background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-        color: #333333; /* لون النص الأساسي */
+    }
+
+    /* 2. تحويل الفورم والمربعات لـ 'بطاقات' بيضاء أنيقة (Cards) */
+    .stForm, div[data-testid="stMarkdownContainer"] div {
+        background-color: #ffffff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 1rem;
+    }
+    
+    /* 3. تنسيق المدخلات وزر الإدخال */
+    .stTextArea textarea, .stTextInput input {
+        border-radius: 8px !important;
+        border: 1px solid #ddd !important;
+    }
+    .stButton>button {
+        background-color: #4CAF50; /* أخضر Wuzzuf */
+        color: white;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+    .stButton>button:hover {
+        background-color: #45a049;
     }
     </style>
 """, unsafe_allow_html=True)
+
+
+
 rag_prompting = import_module("07_prompting")
 rag_retrieve = import_module("06_retrieve_context")
 
