@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.streamlit/secrets.toml
+chroma_store/
+data/*.pkl
+data/*.jsonl
+data/*.npy
+.venv/
+venv/
