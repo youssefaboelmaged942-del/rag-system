@@ -70,6 +70,13 @@ st.markdown(f"""
         border-radius: 8px !important;
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }}
+
+    /* ضبط اتجاه القوائم لتكون جهة اليمين */
+    .report-card ul, .report-card ol {{
+        direction: rtl !important;
+        text-align: right !important;
+        padding-right: 20px !important;
+    }}
     </style>
 """, unsafe_allow_html=True)
 
@@ -141,10 +148,10 @@ if submitted:
 if st.session_state.report:
     st.markdown("## 📊 Egypt Career Roadmap & Report")
     
-    # استخدام حاوية زجاجية داكنة لفصل نص التقرير تماماً عن الصورة الخلفية
+    # تحويل التقرير إلى الاتجاه من اليمين إلى اليسار (RTL) لضبط اللغة العربية
     st.markdown(
         f"""
-        <div style="
+        <div class="report-card" style="
             background-color: rgba(15, 23, 42, 0.88);
             backdrop-filter: blur(12px);
             padding: 28px;
@@ -152,9 +159,11 @@ if st.session_state.report:
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
             color: #FFFFFF;
-            line-height: 1.7;
+            line-height: 1.8;
             font-size: 1.05rem;
             margin-bottom: 20px;
+            direction: rtl;
+            text-align: right;
         ">
             {st.session_state.report}
         </div>
