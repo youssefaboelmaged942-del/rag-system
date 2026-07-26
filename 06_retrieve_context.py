@@ -20,8 +20,6 @@ CHROMA_DIR = _store.CHROMA_DIR
 _vec = import_module("04_vector_representation")
 embed_texts = _vec.embed_texts
 
-# حد المسافة الأقصى القابل للقبول (قم بتعديله حسب دقة النموذج لديك)
-# في Cosine Distance: قيم بين 0.35 و 0.5 تكون مناسبة عادة لتجاهل الوظائف العشوائية
 DEFAULT_DISTANCE_THRESHOLD = 0.5 
 
 
