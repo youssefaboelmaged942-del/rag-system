@@ -20,7 +20,7 @@ CHROMA_DIR = _store.CHROMA_DIR
 _vec = import_module("04_vector_representation")
 embed_texts = _vec.embed_texts
 
-DEFAULT_DISTANCE_THRESHOLD = 0.5 
+DEFAULT_DISTANCE_THRESHOLD = None 
 
 
 def retrieve_context(
