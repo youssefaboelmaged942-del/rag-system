@@ -1,24 +1,3 @@
-"""
-04_vector_representation.py
-----------------------------
-Stage 4 of the RAG pipeline: Vector Representation & Embeddings.
-
-Converts the structured textual chunks from 03_chunking.py into dense
-vector representations using a high-performing sentence embedding
-model (sentence-transformers). A multilingual model is used because
-users may describe their current skills in Arabic or English while
-the Wuzzuf job postings are in English.
-
-Model: paraphrase-multilingual-MiniLM-L12-v2
-  - Good quality/speed trade-off, runs locally (no API key needed),
-    and supports both Arabic and English text.
-
-Run directly:
-    python 04_vector_representation.py
-to embed all chunks and save the embeddings for
-05_create_chroma_store.py.
-"""
-
 import os
 import json
 import numpy as np
