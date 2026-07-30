@@ -1,30 +1,3 @@
-"""
-03_chunking.py
---------------
-Stage 3 of the RAG pipeline: Document Structuring & Chunking.
-
-Formats each cleaned job record into a single, self-contained textual
-chunk (one chunk per job posting -- job postings are short, so no
-further splitting is needed) and attaches metadata used later for
-filtering during context retrieval.
-
-Chunk text format:
-    "Job Title: {Title} | Level: {Level} | Experience: {YearsExp} |
-     Location: {Location}, {Country} | Company: {Company} |
-     Required Skills: {Skills}"
-    (plus " | Source: {SourceURL}" appended when a real listing URL is
-    available -- only DataAnalystJobs.csv provides one -- so the LLM
-    can cite a verifiable link instead of just a company/title pair.)
-
-Metadata attached to each chunk:
-    {"title": Title, "level": Level, "location": Location, "source_url": SourceURL}
-
-Run directly:
-    python 03_chunking.py
-to build chunks from the cleaned dataframe and save them for
-04_vector_representation.py.
-"""
-
 import os
 import json
 import pandas as pd
