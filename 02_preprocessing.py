@@ -1,28 +1,3 @@
-"""
-02_preprocessing.py
---------------------
-Stage 2 of the RAG pipeline: Data Preprocessing & Cleaning.
-
-Cleans the merged job postings dataframe produced by 01_documents.py:
-- Drops rows with missing/null values in the required text fields
-  (SourceURL is exempt -- it's legitimately empty for the
-  Wuzzuf_Jobs.csv source, which has no listing URLs).
-- Drops duplicate job entries.
-- Removes special, non-informative characters from text fields
-  (SourceURL is exempt -- stripping "special characters" would break
-  real URLs like https://wuzzuf.net/jobs/p/...?o=1&l=sp).
-- Standardizes text casing (title case for job titles/companies,
-  consistent casing for level and skills) for reliable querying later.
-- Splits Skills entries that use either comma- or double-space-
-  separated formatting (the two source datasets use different
-  conventions) into a single, consistent comma-separated format.
-
-Run directly:
-    python 02_preprocessing.py
-to clean the cached raw dataframe and save the result for
-03_chunking.py.
-"""
-
 import os
 import re
 import html
