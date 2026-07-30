@@ -1,16 +1,3 @@
-"""
-06_retrieve_context.py
------------------------
-Stage 6 of the RAG pipeline: Context Retrieval Engine.
-
-Accepts user query parameters ('Current Skills' and 'Target Job
-Title'), embeds the target job title, and performs semantic vector
-search over ChromaDB to retrieve the top relevant Wuzzuf job postings.
-
-This module is imported by 07_prompting.py and by streamlit_app.py --
-it is not meant to rebuild the store on import, only to query it.
-"""
-
 from importlib import import_module
 
 _store = import_module("05_create_chroma_store")
