@@ -1,9 +1,3 @@
-"""
-streamlit_app.py
------------------
-Stage 8 of the RAG pipeline: Streamlit App Interface & Deployment.
-"""
-
 import os
 import streamlit as st
 from importlib import import_module
