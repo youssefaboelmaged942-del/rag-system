@@ -1,17 +1,3 @@
-"""
-05_create_chroma_store.py
---------------------------
-Stage 5 of the RAG pipeline: Vector Storage & Indexing.
-
-Initializes a local, persistent ChromaDB collection and stores the
-chunk embeddings from 04_vector_representation.py together with their
-text and metadata, so 06_retrieve_context.py can query them later.
-
-Run directly:
-    python 05_create_chroma_store.py
-to (re)build the Chroma collection on disk under chroma_store/.
-"""
-
 import os
 import numpy as np
 
