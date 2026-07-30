@@ -1,31 +1,3 @@
-"""
-07_prompting.py
-----------------
-Stage 7 of the RAG pipeline: Prompt Engineering & OpenRouter LLM Call.
-
-Builds a structured prompt combining the retrieved job-market context
-with the user's current skills and target job title, then sends it to
-an LLM via the OpenRouter API to produce a structured Arabic career
-report.
-
-CRITICAL INSTRUCTION FOR THE SYSTEM_PROMPT:
-The model is strictly constrained to respond ONLY if the provided context
-(retrieved Wuzzuf jobs) is relevant to the user's input (skills/job title).
-If the context is empty, non-relevant, contains only gibberish, or if the
-user provides nonsense inputs, the model must decline to generate a report
-and instead provide a professional Arabic polite message explaining that
-there are no matching job postings available to make a career recommendation.
-This guarantees a zero-hallucination policy and verifies that the RAG
-pipeline is working only on real data.
-
-API Key rules (see project instructions):
-  - Never hard-code the real API key in this file.
-  - OPENROUTER_API_KEY / OPENROUTER_MODEL are read from the
-    environment first (useful for local dev with a .env file loaded
-    by the shell / python-dotenv) and can be overridden by
-    Streamlit secrets at runtime (see streamlit_app.py).
-"""
-
 import os
 import requests
 
