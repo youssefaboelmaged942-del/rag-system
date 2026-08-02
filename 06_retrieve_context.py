@@ -14,7 +14,7 @@ def retrieve_context(
     current_skills: str, 
     target_job_title: str, 
     top_k: int = 8, 
-    distance_threshold: float = 0.85
+    distance_threshold: float = DEFAULT_DISTANCE_THRESHOLD
 ) -> list:
     """Retrieve top_k job postings and filter out irrelevant results."""
     
@@ -34,21 +34,6 @@ def retrieve_context(
     )
 
     # 2. تنسيق وتصفية النتائج بالـ Threshold المناسب (0.85)
-    formatted_results = _format_results(results, distance_threshold=distance_threshold)
-
-    print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
-
-    return formatted_results
-    )
-
-    # تصفية النتائج بناءً على الـ distance_threshold
-    formatted_results = _format_results(results, distance_threshold=distance_threshold)
-
-    print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
-
-    return formatted_results
-
-    # إرسال النتائج مع حد المسافة للفلترة
     formatted_results = _format_results(results, distance_threshold=distance_threshold)
 
     print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
