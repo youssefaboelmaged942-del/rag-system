@@ -7,7 +7,6 @@ CHROMA_DIR = _store.CHROMA_DIR
 _vec = import_module("04_vector_representation")
 embed_texts = _vec.embed_texts
 
-# تم تقليل الـ Threshold إلى 0.70 لضمان دقة الاسترجاع ومنع النتائج العشوائية
 DEFAULT_DISTANCE_THRESHOLD = 0.70 
 
 
@@ -19,7 +18,6 @@ def retrieve_context(
 ) -> list:
     """Retrieve top_k job postings and filter out irrelevant results."""
     
-    # 1. منع الإدخالات الفارغة أو القصيرة جداً
     if not target_job_title or len(target_job_title.strip()) < 2:
         print("DEBUG: Target job title too short. Returning empty list.")
         return []
@@ -34,7 +32,6 @@ def retrieve_context(
         n_results=top_k
     )
 
-    # 2. تنسيق وتصفية النتائج بالـ Threshold المناسب (0.70)
     formatted_results = _format_results(results, distance_threshold=distance_threshold)
 
     print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
@@ -52,7 +49,6 @@ def _format_results(results, distance_threshold: float = None) -> list:
 
     formatted = []
     for doc, meta, dist in zip(docs, metas, distances):
-        # الفلترة: إذا كان هنالك مسافة محددة وتجاوزت الحد المسموح، يتم استبعاد النتيجة
         if dist is not None and distance_threshold is not None:
             if dist > distance_threshold:
                 continue
