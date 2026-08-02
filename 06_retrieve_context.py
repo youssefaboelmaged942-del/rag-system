@@ -7,23 +7,22 @@ CHROMA_DIR = _store.CHROMA_DIR
 _vec = import_module("04_vector_representation")
 embed_texts = _vec.embed_texts
 
-DEFAULT_DISTANCE_THRESHOLD = 0.35 
+DEFAULT_DISTANCE_THRESHOLD = 0.85 
 
 
 def retrieve_context(
     current_skills: str, 
     target_job_title: str, 
     top_k: int = 8, 
-    distance_threshold: float = DEFAULT_DISTANCE_THRESHOLD
+    distance_threshold: float = 0.85
 ) -> list:
-    """Retrieve the top_k most relevant job postings for a user query.
+    """Retrieve top_k job postings and filter out irrelevant results."""
+    
+    # 1. منع الإدخالات الفارغة أو القصيرة جداً
+    if not target_job_title or len(target_job_title.strip()) < 2:
+        print("DEBUG: Target job title too short. Returning empty list.")
+        return []
 
-    Uses semantic vector search over the full collection using an
-    embedding built from the target job title + current skills.
-
-    Returns a list of dicts: {"text": str, "metadata": dict, "distance": float}
-    Filters out any results that exceed the distance_threshold.
-    """
     _, collection = get_chroma_collection(CHROMA_DIR)
 
     query_text = f"Target Job Title: {target_job_title}. Current Skills: {current_skills}"
@@ -32,6 +31,14 @@ def retrieve_context(
     results = collection.query(
         query_embeddings=[query_embedding],
         n_results=top_k
+    )
+
+    # 2. تنسيق وتصفية النتائج بالـ Threshold المناسب (0.85)
+    formatted_results = _format_results(results, distance_threshold=distance_threshold)
+
+    print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
+
+    return formatted_results
     )
 
     # تصفية النتائج بناءً على الـ distance_threshold
