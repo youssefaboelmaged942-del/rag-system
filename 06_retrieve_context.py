@@ -7,7 +7,7 @@ CHROMA_DIR = _store.CHROMA_DIR
 _vec = import_module("04_vector_representation")
 embed_texts = _vec.embed_texts
 
-DEFAULT_DISTANCE_THRESHOLD = None 
+DEFAULT_DISTANCE_THRESHOLD = 0.35 
 
 
 def retrieve_context(
@@ -33,6 +33,13 @@ def retrieve_context(
         query_embeddings=[query_embedding],
         n_results=top_k
     )
+
+    # تصفية النتائج بناءً على الـ distance_threshold
+    formatted_results = _format_results(results, distance_threshold=distance_threshold)
+
+    print(f"DEBUG: Retrieved {len(formatted_results)} relevant job postings for query: '{target_job_title}'")
+
+    return formatted_results
 
     # إرسال النتائج مع حد المسافة للفلترة
     formatted_results = _format_results(results, distance_threshold=distance_threshold)
